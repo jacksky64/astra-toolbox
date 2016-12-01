@@ -29,3 +29,7 @@
 /build/linux/ltmain.sh
 /build/linux/src/*
 /build/linux/matlab/*
+/bin/x64/Release_CUDA
+Release_CUDA
+Debug_CUDA
+/tests/.vs/tests_vc08/v14/*.suo

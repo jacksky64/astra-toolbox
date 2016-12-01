@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+    <!-- One time include  --> 
+  <PropertyGroup Label="UserMacros">
+    <BOOST_DEF_INCLUDED>I</BOOST_DEF_INCLUDED>
+
+    <EXTERNAL_LIBRARIES_BASE_FOLDER>e:\3rdPartyLibrary\</EXTERNAL_LIBRARIES_BASE_FOLDER>      
+
+    <!-- Unversioned macro  --> 
+  <BOOST_ROOT_DIR Condition="'$(BOOST_SOLUTION_VERSION)'=='1.60'">$(EXTERNAL_LIBRARIES_BASE_FOLDER)boost\boost_1_60_0\</BOOST_ROOT_DIR>
+  <BOOST_VERSION Condition="'$(BOOST_SOLUTION_VERSION)'=='1.60'">1_60</BOOST_VERSION>
+
+
+    <BOOST_DEBUG_SIGNATURE Condition="'$(Configuration)'=='Debug'">-gd</BOOST_DEBUG_SIGNATURE>
+    <BOOST_DEBUG_SIGNATURE Condition="'$(Configuration)'=='Debug_CUDA'">-gd</BOOST_DEBUG_SIGNATURE>
+    <BOOST_DEBUG_SIGNATURE Condition="'$(Configuration)'=='Release'"></BOOST_DEBUG_SIGNATURE>
+    <BOOST_DEBUG_SIGNATURE Condition="'$(Configuration)'=='Release_CUDA'"></BOOST_DEBUG_SIGNATURE>
+    
+  <BOOST_SIGNATURE>$(BOOST_DEBUG_SIGNATURE)-$(BOOST_VERSION)</BOOST_SIGNATURE>
+
+  <BOOST_INCLUDE_DIR>$(BOOST_ROOT_DIR)</BOOST_INCLUDE_DIR> 
+
+     <BOOST_LIB_DIR Condition="'$(Platform)'=='Win32' and '$(PlatformToolset)'=='v140'">$(BOOST_ROOT_DIR)lib32-msvc-14.0\</BOOST_LIB_DIR>
+     <BOOST_LIB_DIR Condition="'$(Platform)'=='x64' and '$(PlatformToolset)'=='v140'">$(BOOST_ROOT_DIR)lib64-msvc-14.0\</BOOST_LIB_DIR>
+
+    <BOOST_PLATFORMTOOLSET Condition="'$(PlatformToolset)'=='v140'">vc140</BOOST_PLATFORMTOOLSET>
+
+  <BOOST_LIB_POSTFIX>$(BOOST_PLATFORMTOOLSET)-mt$(BOOST_SIGNATURE)</BOOST_LIB_POSTFIX>
+
+  </PropertyGroup>
+
+  <!-- Controllo presenza delle macro di scelta della versione -->
+<Target Name="Validate_Boost_PropertySheets" BeforeTargets="ClCompile">
+    <Error
+        Text="La macro BOOST_SOLUTION_VERSION deve essere definita. Verificare la presenza del property sheet di solution adeguato"
+        Condition="'$(BOOST_SOLUTION_VERSION)' == ''" />
+</Target>
+    
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(BOOST_INCLUDE_DIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    
+    <Link>
+      <AdditionalLibraryDirectories>$(BOOST_LIB_DIR);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    <!--  <AdditionalDependencies>boost_thread-$(BOOST_LIB_POSTFIX).lib;boost_system-$(BOOST_LIB_POSTFIX).lib;BOOST_CHRONO-$(BOOST_LIB_POSTFIX).lib;BOOST_DATE_TIME-$(BOOST_LIB_POSTFIX).lib;%(AdditionalDependencies)</AdditionalDependencies>
+      --> 
+    </Link>
+
+      <!-- boost copy --> 
+    <PostBuildEvent>
+      <Command>xcopy /D /Y "$(BOOST_LIB_DIR)boost_thread-$(BOOST_LIB_POSTFIX).dll" "$(OutDir)"
+xcopy /D /Y "$(BOOST_LIB_DIR)boost_system-$(BOOST_LIB_POSTFIX).dll" "$(OutDir)"   
+xcopy /D /Y "$(BOOST_LIB_DIR)boost_chrono-$(BOOST_LIB_POSTFIX).dll" "$(OutDir)" 
+xcopy /D /Y "$(BOOST_LIB_DIR)boost_date_time-$(BOOST_LIB_POSTFIX).dll" "$(OutDir)" 
+xcopy /D /Y "$(BOOST_LIB_DIR)boost_unit_test_framework-$(BOOST_LIB_POSTFIX).dll" "$(OutDir)"      
+%(Command)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+</Project>

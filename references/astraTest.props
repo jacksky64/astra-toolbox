@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <_PropertySheetDisplayName>astra</_PropertySheetDisplayName>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros">
+    <BOOST_SOLUTION_VERSION>1.60</BOOST_SOLUTION_VERSION>
+  </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="Reference To Boost.props" />
+  </ImportGroup>
+ 
+
+ <ItemDefinitionGroup>
+      <!-- boost copy --> 
+    <PostBuildEvent>
+      <Command> dir
+dir "E:\Libraries\Matlab\astra\astra-source\astra-toolbox\bin"
+dir "..\bin\$(Platform)\$(Configuration)"
+xcopy /D /Y  "..\bin\$(Platform)\$(Configuration)\Astra*.dll" "$(OutDir)"   
+%(Command)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+
+ </Project>
